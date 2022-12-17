@@ -1,10 +1,14 @@
 // Sift is a small routing library that abstracts away details like starting a
 // listener on a port, and provides a simple function (serve) that has an API
 // to invoke a function for a specific path.
-import { json, serve, validateRequest } from "sift/mod.ts";
+import {
+  json,
+  serve,
+  validateRequest,
+} from "https://deno.land/x/sift@0.4.2/mod.ts";
 // TweetNaCl is a cryptography library that we use to verify requests
 // from Discord.
-import nacl from "tweetnacl";
+import nacl from "npm:tweetnacl";
 
 // For all requests to "/" endpoint, we want to invoke home() handler.
 serve({

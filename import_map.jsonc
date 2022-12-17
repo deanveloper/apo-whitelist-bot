@@ -1,7 +1,0 @@
-{
-  "imports": {
-    "template/": "./src/",
-    "sift/": "https://deno.land/x/sift@0.4.2/",
-    "tweetnacl": "https://cdn.skypack.dev/tweetnacl@v1.0.3?dts"
-  }
-}

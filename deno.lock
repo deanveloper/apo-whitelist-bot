@@ -40,5 +40,14 @@
     "https://x.lcas.dev/preact@10.5.12/mod.js": "62eb264b333369c5c3f5186fc97964c1787f9352d52decfde9c50084add3a86f",
     "https://x.lcas.dev/preact@10.5.12/ssr.d.ts": "969fee1e06346d80d97414ffa0a49a13c0672462324a7f5e2e335662097ed595",
     "https://x.lcas.dev/preact@10.5.12/ssr.js": "17b5eebfac9321092cee4a6fcbf9a88885936824eadf2c1c16b297cb829721e1"
+  },
+  "npm": {
+    "specifiers": { "tweetnacl": "tweetnacl@1.0.3" },
+    "packages": {
+      "tweetnacl@1.0.3": {
+        "integrity": "sha512-6rt+RN7aOi1nGMyC4Xa5DdYiukl2UWCbcJft7YhxReBGQD7OAM8Pbxw6YMo4r2diNEA8FEmu32YOn9rhaiE5yw==",
+        "dependencies": {}
+      }
+    }
   }
 }
