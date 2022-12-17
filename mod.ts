@@ -5,7 +5,7 @@ import {
   json,
   serve,
   validateRequest,
-} from "https://deno.land/x/sift@0.4.2/mod.ts";
+} from "https://deno.land/x/sift@0.6.0/mod.ts";
 // TweetNaCl is a cryptography library that we use to verify requests
 // from Discord.
 import nacl from "npm:tweetnacl";
