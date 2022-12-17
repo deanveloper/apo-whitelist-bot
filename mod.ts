@@ -61,8 +61,10 @@ async function home(request: Request) {
     const RCON_PASSWORD = Deno.env.get("RCON_PASSWORD")!;
 
     const rcon = new RCON();
+    console.log("started");
     try {
       await rcon.connect(RCON_HOST, parseInt(RCON_PORT), RCON_PASSWORD);
+      console.log("connect");
     } catch {
       return json({
         type: 4,
@@ -73,6 +75,7 @@ async function home(request: Request) {
     }
     try {
       await rcon.send(`whitelist add ${username}`, "COMMAND");
+      console.log("whitelist add");
     } catch {
       return json({
         type: 4,
