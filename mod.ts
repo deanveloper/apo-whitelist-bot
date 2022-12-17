@@ -6,9 +6,8 @@ import {
   serve,
   validateRequest,
 } from "https://deno.land/x/sift@0.6.0/mod.ts";
-// TweetNaCl is a cryptography library that we use to verify requests
-// from Discord.
 import nacl from "https://cdn.skypack.dev/tweetnacl@v1.0.3?dts";
+import { RCON } from "https://deno.land/x/rcon@v1.0.0/mod.ts";
 
 // For all requests to "/" endpoint, we want to invoke home() handler.
 serve({
@@ -53,15 +52,42 @@ async function home(request: Request) {
   // Type 2 in a request is an ApplicationCommand interaction.
   // It implies that a user has issued a command.
   if (type === 2) {
-    const { value } = data.options.find((option: { name: string }) =>
+    const { value: username } = data.options.find((option: { name: string }) =>
       option.name === "username"
     );
+
+    const RCON_HOST = Deno.env.get("RCON_HOST")!;
+    const RCON_PORT = Deno.env.get("RCON_PORT")!;
+    const RCON_PASSWORD = Deno.env.get("RCON_PASSWORD")!;
+
+    const rcon = new RCON();
+    try {
+      await rcon.connect(RCON_HOST, parseInt(RCON_PORT), RCON_PASSWORD);
+    } catch {
+      return json({
+        type: 4,
+        data: {
+          content: `error connecting to server`,
+        },
+      });
+    }
+    try {
+      console.log(await rcon.send(`whitelist add ${username}`, "COMMAND"));
+    } catch {
+      return json({
+        type: 4,
+        data: {
+          content: `error executing whitelist command`,
+        },
+      });
+    }
+
     return json({
       // Type 4 responds with the below message retaining the user's
       // input at the top.
       type: 4,
       data: {
-        content: `Hello, ${value}!`,
+        content: `added ${username} to whitelist!`,
       },
     });
   }
