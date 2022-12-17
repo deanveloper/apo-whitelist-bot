@@ -1,24 +1,17 @@
 import {
   ApplicationCommandOption,
   Interaction,
+  InteractionCallbackData,
   InteractionResponse,
-  InteractionCallbackData
 } from "discordeno/mod.ts";
 
-import { ping, avatar, language } from "template/commands/general/mod.ts"
-import { PermissionLevels } from "template/utils/mod.ts";
+import { whitelist } from "./whitelist.ts";
 
 export const commands: Record<string, Command | undefined> = {
-  ping,
-  avatar,
-  language,
+  whitelist,
 };
 
 export interface Command {
-  /** The permissions levels that are allowed to use this command. */
-  permissionLevels?:
-    | ((payload: Interaction, command: Command) => boolean | Promise<boolean>)
-    | (keyof typeof PermissionLevels)[];
   /** The description of the command. Can be a i18n key if you use advanced version. */
   description?: string;
   /** Whether or not this slash command should be enabled right now. Defaults to true. */
@@ -33,7 +26,7 @@ export interface Command {
   options?: ApplicationCommandOption[];
   /** The function that will be called when the command is executed. */
   execute: (
-    payload: Interaction
+    payload: Interaction,
   ) =>
     | InteractionResponse
     | InteractionCallbackData

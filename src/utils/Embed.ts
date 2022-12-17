@@ -1,11 +1,11 @@
 import {
-  snowflakeToBigint,
-  User,
-  getAvatarURL,
   DiscordEmbedAuthor,
   DiscordEmbedField,
   DiscordEmbedFooter,
-  DiscordEmbedImage
+  DiscordEmbedImage,
+  getAvatarURL,
+  snowflakeToBigint,
+  User,
 } from "discordeno/mod.ts";
 
 const embedLimits = {
@@ -72,7 +72,7 @@ export class Embed {
         icon_url: getAvatarURL(
           snowflakeToBigint(icon_url.id),
           snowflakeToBigint(icon_url?.discriminator),
-          { avatar: icon_url.avatar!, animated: true }
+          { avatar: icon_url.avatar!, animated: true },
         ),
         url,
       };
@@ -82,12 +82,11 @@ export class Embed {
   }
 
   setColor(color: string) {
-    this.color =
-      color.toLowerCase() === `random`
-        ? // Random color
-          Math.floor(Math.random() * (0xffffff + 1))
-        : // Convert the hex to a acceptable color for discord
-          parseInt(color.replace("#", ""), 16);
+    this.color = color.toLowerCase() === `random`
+      // Random color
+      ? Math.floor(Math.random() * (0xffffff + 1))
+      // Convert the hex to a acceptable color for discord
+      : parseInt(color.replace("#", ""), 16);
 
     return this;
   }
@@ -141,7 +140,7 @@ export class Embed {
         url: getAvatarURL(
           snowflakeToBigint(url.id),
           snowflakeToBigint(url.discriminator),
-          { avatar: url.avatar!, animated: true, size: 2048 }
+          { avatar: url.avatar!, animated: true, size: 2048 },
         ),
       };
     }
@@ -173,4 +172,3 @@ export interface EmbedFile {
   blob: unknown;
   name: string;
 }
-    

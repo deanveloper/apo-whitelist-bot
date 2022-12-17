@@ -1,23 +1,18 @@
+import { json, serve, validateRequest } from "sift/mod.ts";
 import {
-  json,
-  serve,
-  validateRequest
-} from "sift/mod.ts";
-import { 
   Interaction,
   InteractionResponseTypes,
   InteractionTypes,
-  verifySignature
+  verifySignature,
 } from "discordeno/mod.ts";
-import { camelize } from 'https://deno.land/x/camelize@2.0.0/mod.ts';
+import { camelize } from "https://deno.land/x/camelize@2.0.0/mod.ts";
 
 import { commands } from "template/commands/mod.ts";
 import { translate } from "template/languages/mod.ts";
-import { 
-  isInteractionResponse,
-  logWebhook,
+import {
   hasPermissionLevel,
-  redeploy
+  isInteractionResponse,
+  redeploy,
 } from "template/utils/mod.ts";
 
 serve({
@@ -101,7 +96,6 @@ async function main(request: Request) {
 
     const result = await command.execute(payload);
     if (!isInteractionResponse(result)) {
-      await logWebhook(payload).catch(console.error);
       return json({
         data: result,
         type: InteractionResponseTypes.ChannelMessageWithSource,
