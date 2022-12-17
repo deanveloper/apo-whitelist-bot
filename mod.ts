@@ -72,7 +72,7 @@ async function home(request: Request) {
       });
     }
     try {
-      console.log(await rcon.send(`whitelist add ${username}`, "COMMAND"));
+      await rcon.send(`whitelist add ${username}`, "COMMAND");
     } catch {
       return json({
         type: 4,
