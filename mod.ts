@@ -56,27 +56,11 @@ async function home(request: Request) {
       option.name === "username"
     );
 
-    const rcon = new RCON();
-    try {
-      const RCON_HOST = Deno.env.get("RCON_HOST")!;
-      const RCON_PORT = Deno.env.get("RCON_PORT")!;
-      const RCON_PASSWORD = Deno.env.get("RCON_PASSWORD")!;
-
-      await rcon.connect(RCON_HOST, parseInt(RCON_PORT), RCON_PASSWORD);
-      await rcon.send(`whitelist add ${username}`, "COMMAND");
-    } catch {
-      return json({
-        type: 4,
-        data: {
-          content: `error executing whitelist command`,
-          flags: 64, // ephemeral
-        },
-      });
-    }
+    addToWhitelist(username).then(() => {
+      console.log(`successfully added ${username} to whitelist`);
+    }).catch((err) => console.error(err));
 
     const response = json({
-      // Type 4 responds with the below message retaining the user's
-      // input at the top.
       type: 4,
       data: {
         content: `added ${username} to whitelist!`,
@@ -112,4 +96,18 @@ async function verifySignature(
 /** Converts a hexadecimal string to Uint8Array. */
 function hexToUint8Array(hex: string) {
   return new Uint8Array(hex.match(/.{1,2}/g)!.map((val) => parseInt(val, 16)));
+}
+
+async function addToWhitelist(username: string) {
+  const rcon = new RCON();
+  try {
+    const RCON_HOST = Deno.env.get("RCON_HOST")!;
+    const RCON_PORT = Deno.env.get("RCON_PORT")!;
+    const RCON_PASSWORD = Deno.env.get("RCON_PASSWORD")!;
+
+    await rcon.connect(RCON_HOST, parseInt(RCON_PORT), RCON_PASSWORD);
+    await rcon.send(`whitelist add ${username}`, "COMMAND");
+  } catch (err) {
+    console.log(err);
+  }
 }
