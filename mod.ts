@@ -14,13 +14,6 @@ serve({
   "/": home,
 });
 
-let rcon: RCON | null = null;
-try {
-  rcon = await initRcon();
-} catch (err) {
-  console.log(err);
-}
-
 // The main logic of the Discord Slash Command is defined in this function.
 async function home(request: Request) {
   // validateRequest() ensures that a request is of POST method and
@@ -59,21 +52,13 @@ async function home(request: Request) {
   // Type 2 in a request is an ApplicationCommand interaction.
   // It implies that a user has issued a command.
   if (type === 2) {
-    if (!rcon) {
-      return json({
-        type: 4,
-        data: {
-          content: `rcon not enabled`,
-        },
-      });
-    }
-
+    const rcon = await getRcon();
     const { value: username } = data.options.find((option: { name: string }) =>
       option.name === "username"
     );
 
     try {
-      await rcon!.send(`whitelist add ${username}`, "COMMAND");
+      await rcon.send(`whitelist add ${username}`, "COMMAND");
     } catch {
       return json({
         type: 4,
@@ -122,12 +107,18 @@ function hexToUint8Array(hex: string) {
   return new Uint8Array(hex.match(/.{1,2}/g)!.map((val) => parseInt(val, 16)));
 }
 
-async function initRcon() {
-  const rcon = new RCON();
-  const RCON_HOST = Deno.env.get("RCON_HOST")!;
-  const RCON_PORT = Deno.env.get("RCON_PORT")!;
-  const RCON_PASSWORD = Deno.env.get("RCON_PASSWORD")!;
+async function getRcon() {
+  const global =
+    (window as { __rcon: RCON | null } & Window & typeof globalThis);
+  if (!global.__rcon) {
+    const rcon = new RCON();
+    const RCON_HOST = Deno.env.get("RCON_HOST")!;
+    const RCON_PORT = Deno.env.get("RCON_PORT")!;
+    const RCON_PASSWORD = Deno.env.get("RCON_PASSWORD")!;
 
-  await rcon.connect(RCON_HOST, parseInt(RCON_PORT), RCON_PASSWORD);
-  return rcon;
+    await rcon.connect(RCON_HOST, parseInt(RCON_PORT), RCON_PASSWORD);
+    global.__rcon = rcon;
+  }
+
+  return global.__rcon;
 }
