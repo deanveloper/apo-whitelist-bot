@@ -74,7 +74,7 @@ async function home(request: Request) {
       });
     }
 
-    return json({
+    const response = json({
       // Type 4 responds with the below message retaining the user's
       // input at the top.
       type: 4,
@@ -82,6 +82,8 @@ async function home(request: Request) {
         content: `added ${username} to whitelist!`,
       },
     });
+    console.log(response);
+    return response;
   }
 
   // We will return a bad request error as a valid Discord request
