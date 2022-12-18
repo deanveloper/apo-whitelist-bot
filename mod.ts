@@ -82,7 +82,7 @@ async function home(request: Request) {
       });
     }
 
-    console.log(`added ${username}`);
+    console.log(`added ${username}!`);
     return json({
       // Type 4 responds with the below message retaining the user's
       // input at the top.
