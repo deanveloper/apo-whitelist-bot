@@ -52,23 +52,28 @@ async function home(request: Request) {
   // Type 2 in a request is an ApplicationCommand interaction.
   // It implies that a user has issued a command.
   if (type === 2) {
-    const rcon = await getRcon();
     const { value: username } = data.options.find((option: { name: string }) =>
       option.name === "username"
     );
 
+    const rcon = new RCON();
     try {
+      const RCON_HOST = Deno.env.get("RCON_HOST")!;
+      const RCON_PORT = Deno.env.get("RCON_PORT")!;
+      const RCON_PASSWORD = Deno.env.get("RCON_PASSWORD")!;
+
+      await rcon.connect(RCON_HOST, parseInt(RCON_PORT), RCON_PASSWORD);
       await rcon.send(`whitelist add ${username}`, "COMMAND");
     } catch {
       return json({
         type: 4,
         data: {
           content: `error executing whitelist command`,
+          flags: 64, // ephemeral
         },
       });
     }
 
-    console.log(`added ${username}!`);
     return json({
       // Type 4 responds with the below message retaining the user's
       // input at the top.
@@ -105,20 +110,4 @@ async function verifySignature(
 /** Converts a hexadecimal string to Uint8Array. */
 function hexToUint8Array(hex: string) {
   return new Uint8Array(hex.match(/.{1,2}/g)!.map((val) => parseInt(val, 16)));
-}
-
-async function getRcon() {
-  const global =
-    (window as { __rcon: RCON | null } & Window & typeof globalThis);
-  if (!global.__rcon) {
-    const rcon = new RCON();
-    const RCON_HOST = Deno.env.get("RCON_HOST")!;
-    const RCON_PORT = Deno.env.get("RCON_PORT")!;
-    const RCON_PASSWORD = Deno.env.get("RCON_PASSWORD")!;
-
-    await rcon.connect(RCON_HOST, parseInt(RCON_PORT), RCON_PASSWORD);
-    global.__rcon = rcon;
-  }
-
-  return global.__rcon;
 }
